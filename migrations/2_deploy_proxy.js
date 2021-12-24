@@ -36,12 +36,14 @@ module.exports = async function (deployer, network, accounts) {
   nrOfDogs = await proxyDog.getNumberOfDogs();
   console.log("After Update: " + nrOfDogs.toNumber());
 
-  //set the number of dogs on the new contract
+  //set the number of dogs on the new contract by the owner
   await proxyDog.setNumberOfDogs(30);
   //check storage remained
   nrOfDogs = await proxyDog.getNumberOfDogs();
   console.log("After Change: " + nrOfDogs.toNumber());
 
+  //set the number of dogs on the new contract by non authorized account should thrown an error
+  //await proxyDog.setNumberOfDogs(30, {from: accounts[1]});
   
 }
 
