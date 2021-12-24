@@ -20,16 +20,27 @@ module.exports = async function (deployer, network, accounts) {
   nrOfDogs = await dogs.getNumberOfDogs();
   console.log(nrOfDogs.toNumber());
 
+
+
   //Deploy DogsUpdated contract
   const dogsUpdated = await DogsUpdated.new();
   proxy.upgrade(dogsUpdated.address);
 
+  //fool truffle once again. It now thinks proxyDog has all function including initialize
+  proxyDog = await DogsUpdated.at(proxy.address);
+
+  //initiate the proxy state
+  proxyDog.initialize(accounts[0]);
+
+  //check storage remained
   nrOfDogs = await proxyDog.getNumberOfDogs();
   console.log("After Update: " + nrOfDogs.toNumber());
 
   //set the number of dogs on the new contract
-  proxyDog.setNumberOfDogs(30);
-
+  await proxyDog.setNumberOfDogs(30);
+  //check storage remained
+  nrOfDogs = await proxyDog.getNumberOfDogs();
+  console.log("After Change: " + nrOfDogs.toNumber());
 
   
 }
